@@ -51,7 +51,10 @@ export default function NewProcessCalculator({ onBack }) {
   // --- Амплитуда распределения температуры по поверхности ---
   const pipeSpacingM = pipeSpacing / 1000;
   const K = 2.5;
-  const amplitude = K * (pipeSpacingM / (lambdaEquiv * Math.sqrt(dTotal)));
+  // Базовая амплитуда (от конструкции)
+  const baseAmplitude = K * (pipeSpacingM / (lambdaEquiv * Math.sqrt(dTotal)));
+  // Физически корректная амплитуда с учётом дельты теплоносителя
+  const amplitude = baseAmplitude * Math.sqrt(fluidDelta / 10);
 
   // ✅ Правильная логика с итеративным подходом:
   // 1. Тепловой поток
@@ -62,13 +65,13 @@ export default function NewProcessCalculator({ onBack }) {
   // 4. Средняя температура теплоносителя
   const averageFluidTemp = surfaceAverage + deltaT;
   // 5. Температура подачи
-  const supplyTemp = averageFluidTemp + fluidDelta/2 + amplitude/2;
+  const supplyTemp = averageFluidTemp + fluidDelta/2;
   // 6. Температура обратки
-  const returnTemp = supplyTemp - fluidDelta;
+  const returnTemp = averageFluidTemp - fluidDelta/2;
   // 7. Максимальная температура поверхности
-  const maxSurfaceTemp = supplyTemp - deltaT;
+  const maxSurfaceTemp = surfaceAverage + amplitude/2;
   // 8. Минимальная температура поверхности
-  const minSurfaceTemp = returnTemp - deltaT;
+  const minSurfaceTemp = surfaceAverage - amplitude/2;
 
   // Фактическая дельта температуры поверхности
   const surfaceDelta = maxSurfaceTemp - minSurfaceTemp;
