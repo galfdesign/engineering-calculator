@@ -24,7 +24,7 @@ const pipeSpacingAverageCorrection = {
 };
 
 export default function NewProcessCalculator({ onBack }) {
-  const [maxSurfaceTemp, setMaxSurfaceTemp] = useState(29);
+  const [surfaceAverage, setSurfaceAverage] = useState(27);
   const [fluidDelta, setFluidDelta] = useState(5);
   const [airTemp, setAirTemp] = useState(22);
   const [screedThicknessMM, setScreedThicknessMM] = useState(50);
@@ -54,39 +54,22 @@ export default function NewProcessCalculator({ onBack }) {
   const amplitude = K * (pipeSpacingM / (lambdaEquiv * Math.sqrt(dTotal)));
 
   // ✅ Правильная логика с итеративным подходом:
-  // 1. Начинаем с предположения о средней температуре поверхности
-  let surfaceAverage = maxSurfaceTemp - amplitude / 2;
-  
-  // 2. Итеративно уточняем расчет
-  for (let i = 0; i < 3; i++) {
-    // Рассчитываем тепловой поток на основе текущей средней температуры поверхности
-    const deltaTSurface = surfaceAverage - airTemp;
-    const heatFluxCalculated = deltaTSurface > 0 ? deltaTSurface * 11.0 : 0;
-    
-    // Потери через конструкцию
-    const deltaT = heatFluxCalculated * totalResistance;
-    
-    // Температуры теплоносителя
-    const supplyTemp = maxSurfaceTemp + deltaT - amplitude / 2;
-    const returnTemp = supplyTemp - fluidDelta;
-    const averageFluidTemp = (supplyTemp + returnTemp) / 2;
-    
-    // Обновляем среднюю температуру поверхности
-    surfaceAverage = averageFluidTemp - deltaT;
-  }
-  
-  // Финальные расчеты после итераций
-  const deltaTSurface = surfaceAverage - airTemp;
-  const heatFluxCalculated = deltaTSurface > 0 ? deltaTSurface * 11.0 : 0;
+  // 1. Тепловой поток
+  const heatFluxCalculated = (surfaceAverage - airTemp) * 11.0;
+  // 2. Потери через конструкцию
   const deltaT = heatFluxCalculated * totalResistance;
-  
-  const supplyTemp = maxSurfaceTemp + deltaT - amplitude / 2;
+  // 3. Амплитуда (уже рассчитана выше)
+  // 4. Средняя температура теплоносителя
+  const averageFluidTemp = surfaceAverage + deltaT;
+  // 5. Температура подачи
+  const supplyTemp = averageFluidTemp + fluidDelta/2 + amplitude/2;
+  // 6. Температура обратки
   const returnTemp = supplyTemp - fluidDelta;
-  const averageFluidTemp = (supplyTemp + returnTemp) / 2;
-  
-  // Минимальная температура поверхности
-  const minSurfaceTemp = returnTemp - deltaT + amplitude / 2;
-  
+  // 7. Максимальная температура поверхности
+  const maxSurfaceTemp = supplyTemp - deltaT;
+  // 8. Минимальная температура поверхности
+  const minSurfaceTemp = returnTemp - deltaT;
+
   // Фактическая дельта температуры поверхности
   const surfaceDelta = maxSurfaceTemp - minSurfaceTemp;
 
@@ -196,9 +179,7 @@ export default function NewProcessCalculator({ onBack }) {
             <div style={{marginBottom: 8}}>
               <strong>Температура обратки:</strong> {returnTemp.toFixed(1)} °C
             </div>
-            <div style={{marginBottom: 8}}>
-              <strong>Средняя температура теплоносителя:</strong> {averageFluidTemp.toFixed(1)} °C
-            </div>
+            
             <div style={{marginBottom: 8}}>
               <strong>Средняя температура поверхности:</strong> {surfaceAverage.toFixed(1)} °C
             </div>
@@ -225,12 +206,12 @@ export default function NewProcessCalculator({ onBack }) {
             fontWeight: 500,
             color: '#e2e7ed'
           }}>
-            Макс. температура поверхности (°C):
+            Средняя температура поверхности (°C):
           </label>
           <input
             type="number"
-            value={maxSurfaceTemp}
-            onChange={(e) => setMaxSurfaceTemp(+e.target.value)}
+            value={surfaceAverage}
+            onChange={(e) => setSurfaceAverage(+e.target.value)}
             style={{
               width: '100%',
               padding: '12px 16px',
@@ -241,7 +222,7 @@ export default function NewProcessCalculator({ onBack }) {
               fontSize: '1rem',
               boxSizing: 'border-box'
             }}
-            placeholder="29"
+            placeholder="27"
           />
         </div>
 
