@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/engineering-calculator/static/css/main.320b2fe5.css",
+    "main.js": "/engineering-calculator/static/js/main.5e869f53.js",
+    "index.html": "/engineering-calculator/index.html",
+    "main.320b2fe5.css.map": "/engineering-calculator/static/css/main.320b2fe5.css.map",
+    "main.5e869f53.js.map": "/engineering-calculator/static/js/main.5e869f53.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.320b2fe5.css",
+    "static/js/main.5e869f53.js"
+  ]
+}

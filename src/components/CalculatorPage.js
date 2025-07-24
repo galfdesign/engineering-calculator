@@ -1,6 +1,9 @@
 import React from 'react';
 import { Typography, IconButton, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import RadiatorCalculator from './RadiatorCalculator';
+import PlateHeatFlowCalculator from './PlateHeatFlowCalculator';
+import ExpansionTankCalculator from './ExpansionTankCalculator';
 
 const PageContainer = styled(Box)(({ theme }) => ({
   position: 'fixed',
@@ -36,7 +39,16 @@ const StyledIframe = styled('iframe')(({ theme }) => ({
   borderRadius: theme.spacing(1),
 }));
 
-const CalculatorPage = ({ title, url, onBack }) => {
+const CalculatorPage = ({ id, title, url, onBack }) => {
+  if (id === 'radiatorCalculator') {
+    return <RadiatorCalculator onBack={onBack} />;
+  }
+  if (id === 'plateHeatFlowCalculator') {
+    return <PlateHeatFlowCalculator onBack={onBack} />;
+  }
+  if (id === 'expansionTankCalculator') {
+    return <ExpansionTankCalculator onBack={onBack} />;
+  }
   return (
     <PageContainer>
       <BackButton onClick={onBack}>←</BackButton>

@@ -1,0 +1,140 @@
+.liquid-container {
+  max-width: 430px;
+  margin: 0 auto;
+  padding: 0 12px 40px 12px;
+}
+.liquid-calculator {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.25s;
+  padding: 11px 20px 38px 20px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.liquid-calculator:hover {
+  box-shadow: var(--shadow-hover);
+}
+.liquid-header {
+  color: var(--main-blue);
+  padding: 0;
+  font-size: 1.16em;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.02em;
+  margin: -12px 0 16px 0;
+  line-height: 1.2;
+}
+.liquid-body {
+  padding: 0;
+}
+.liquid-group {
+  margin-bottom: 17px;
+}
+.liquid-group label {
+  font-size: 0.98em;
+  color: var(--label);
+  margin-bottom: 6px;
+  display: block;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+.liquid-group input,
+.liquid-group select {
+  width: 100%;
+  font-size: 1em;
+  border-radius: 11px;
+  border: 1.5px solid var(--border);
+  background: var(--input-bg);
+  color: var(--input-text);
+  padding: 11px 13px;
+  margin-top: 2px;
+  transition: border-color 0.2s, background 0.2s;
+  outline: none;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+  text-align: center;
+}
+.liquid-group input:focus,
+.liquid-group select:focus {
+  border-color: var(--main-blue);
+  background: var(--field-focus);
+}
+.liquid-group select option {
+  color: #101820;
+  background: #f2f6fc;
+}
+.liquid-results {
+  margin-top: 18px;
+  background: var(--result-bg);
+  border-radius: 15px;
+  padding: 13px 11px 9px 11px;
+  box-shadow: 0 1px 7px rgba(76,201,240,0.03);
+}
+.liquid-result-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid #27324c;
+}
+.liquid-result-item:last-child {
+  border-bottom: none;
+}
+.liquid-result-label {
+  color: var(--result-label);
+  font-size: 0.97em;
+  font-weight: 500;
+}
+.liquid-result-value {
+  font-weight: 700;
+  color: var(--result-value);
+}
+@media (max-width: 600px) {
+  .liquid-container {
+    max-width: calc(100vw - 10px);
+    padding: 0 5px 18vw 5px;
+  }
+  .liquid-calculator {
+    max-width: none;
+    margin: 0 auto;
+    padding: 11px 20px 38px 20px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .liquid-header {
+    font-size: 1em;
+    margin-top: 5px;
+  }
+  .liquid-group {
+    margin-bottom: 9px;
+  }
+  .liquid-group label {
+    font-size: 0.97em;
+  }
+  .liquid-group input,
+  .liquid-group select {
+    font-size: 1em;
+    padding: 8px 8px;
+  }
+  .liquid-results {
+    padding: 9px 3vw 8px 3vw;
+  }
+}
+@media (max-width: 420px) {
+  .liquid-header {
+    font-size: 0.94em;
+  }
+  .liquid-group {
+    margin-bottom: 6px;
+  }
+}
+.liquid-group input[type="number"]::-webkit-outer-spin-button,
+.liquid-group input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.liquid-group input[type="number"] {
+  -moz-appearance: textfield;
+} 

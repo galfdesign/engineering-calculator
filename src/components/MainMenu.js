@@ -5,10 +5,6 @@ const MenuContainer = (props) => (
   <div className="container" style={{marginTop: 0}}>{props.children}</div>
 );
 
-const MenuCard = (props) => (
-  <div className="card" style={{marginBottom: 18}}>{props.children}</div>
-);
-
 const MainMenu = ({ onShowCalculator }) => {
   const [openMenu, setOpenMenu] = useState(null);
 
@@ -19,70 +15,85 @@ const MainMenu = ({ onShowCalculator }) => {
   const menuItems = {
     hydraulic: {
       title: 'Гидравлика',
+      color: '#E3F2FD', // Светло-голубой
       items: [
-        {
-          title: 'Скорость жидкости',
-          url: 'https://galfdesign.github.io/gidskg/',
-          id: 'speedPage',
-        },
-        {
-          title: 'Расход жидкости по мощности',
-          url: '',
-          id: 'flowCalculator',
-        },
-        {
-          title: 'Расход жидкости по диаметру',
-          url: 'https://galfdesign.github.io/giddiametr/',
-          id: 'diameterPage',
-        },
-        {
-          title: 'Гидравлическое сопротивление',
-          url: 'https://galfdesign.github.io/gidsoprotjvl/',
-          id: 'resistancePage',
-        },
+        { title: 'Расход жидкости по мощности', url: '', id: 'flowCalculator' },
+        { title: 'Расход жидкости по диаметру', url: '', id: 'flowByDiameterCalculator' },
+        { title: 'Скорость жидкости', url: '', id: 'liquidSpeedCalculator' },
+        { title: 'Гидравлическое сопротивление', url: '', id: 'hydraulicResistanceCalculator' },
       ],
     },
     heating: {
       title: 'Отопление',
+      color: '#F3E5F5', // Светло-фиолетовый
       items: [
-        {
-          title: 'Подбор насоса',
-          url: 'https://galfdesign.github.io/soprtrub/',
-          id: 'pumpPage',
-        },
-        {
-          title: 'Температура внутренней поверхности',
-          url: '#',
-          id: 'tempPage',
-        },
-        {
-          title: 'Сопротивление материалов',
-          url: '#',
-          id: 'resistancePage',
-        },
+        { title: 'Подбор насоса', url: '', id: 'pumpSelectionCalculator' },
+        { title: 'Подбор радиаторов', url: '', id: 'radiatorCalculator' },
+        { title: 'Расширительный бак отопления', url: '', id: 'expansionTankCalculator' },
       ],
     },
+    cost: {
+      title: 'Стоимость',
+      color: '#E8F5E9', // Светло-зеленый
+      items: [
+        { title: 'Подогрев вентиляции', url: '', id: 'ventilationHeatingCalculator' },
+        // { title: 'Затраты на отопление (тест)', url: '', id: 'fuelCostCalculator' },
+      ],
+    },
+    processes: {
+      title: 'Процессы',
+      color: '#FFEBEE', // Светло-красный
+      items: [
+        { title: 'Тепловой поток от плиты', url: '', id: 'plateHeatFlowCalculator' },
+        { title: 'Напольное отопление', url: '', id: 'newProcessCalculator' }
+      ],
+    },
+    // reference: {
+    //   title: 'Справочник',
+    //   color: '#FFF3E0', // Светло-оранжевый
+    //   items: [
+    //     { title: 'Строительная климатология', url: '', id: 'buildingClimatology' },
+    //   ],
+    // },
   };
 
   return (
     <MenuContainer>
-      <div className="header-row" style={{justifyContent: 'space-between', marginBottom: 24}}>
-        <div style={{display: 'flex', alignItems: 'center', gap: 10}}>
-          <img src="/galfdesign-logo.png" alt="GalfDesign" style={{height: 28, width: 'auto', display: 'block'}} />
-        </div>
-        <div className="card-title" style={{fontSize: '1.35em', flex: 1, textAlign: 'right', color: '#8a8a8a'}}>калькуляторы</div>
+      <div style={{display: 'flex', justifyContent: 'center', marginBottom: 18, marginTop: 10}}>
+        <span style={{
+          fontWeight: 600,
+          fontSize: 18,
+          color: '#8a8a8a',
+          letterSpacing: '0.03em',
+          fontFamily: "'Roboto', sans-serif",
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis'
+        }}>
+          Инженерные калькуляторы
+        </span>
       </div>
       {Object.entries(menuItems).map(([key, menu]) => (
-        <MenuCard key={key}>
-          <div className="toggle-row" style={{marginBottom: 0}}>
-            <button
-              className={`toggle-option${openMenu === key ? ' active' : ''}`}
-              style={{width: '100%', fontSize: '1.08em', justifyContent: 'space-between'}}
-              onClick={() => toggleMenu(key)}
-            >
-              {menu.title} <span style={{float: 'right', fontSize: '0.9em', marginLeft: 8}}>{openMenu === key ? '▲' : '▼'}</span>
-            </button>
-          </div>
+        <div key={key} style={{marginBottom: 18}}>
+          <button
+            className={`toggle-option${openMenu === key ? ' active' : ''}`}
+            style={{
+              width: '100%',
+              fontSize: '1.25em',
+              justifyContent: 'space-between',
+              background: menu.color,
+              color: '#2c3e50',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '14px 16px',
+              transition: 'all 0.2s ease',
+              fontWeight: 600,
+              boxShadow: '0 2px 8px rgba(30,60,120,0.06)'
+            }}
+            onClick={() => toggleMenu(key)}
+          >
+            {menu.title} <span style={{float: 'right', fontSize: '0.9em', marginLeft: 8}}>{openMenu === key ? '▲' : '▼'}</span>
+          </button>
           {openMenu === key && (
             <div style={{marginTop: 10}}>
               {menu.items.map((item) => (
@@ -94,12 +105,12 @@ const MainMenu = ({ onShowCalculator }) => {
                     textAlign: 'left',
                     marginBottom: 7,
                     fontWeight: 500,
-                    fontSize: '1em',
+                    fontSize: '1.15em',
                     borderRadius: 10,
                     background: 'var(--toggle-bg)',
                     color: 'var(--input-text)',
                     border: '1.5px solid var(--border)',
-                    padding: '10px 16px',
+                    padding: '12px 16px',
                     transition: 'background 0.18s, color 0.18s',
                   }}
                   onClick={() => onShowCalculator(item.id, item.title, item.url)}
@@ -109,7 +120,7 @@ const MainMenu = ({ onShowCalculator }) => {
               ))}
             </div>
           )}
-        </MenuCard>
+        </div>
       ))}
     </MenuContainer>
   );

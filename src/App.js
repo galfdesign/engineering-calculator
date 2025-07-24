@@ -4,6 +4,14 @@ import CssBaseline from '@mui/material/CssBaseline';
 import MainMenu from './components/MainMenu';
 import CalculatorPage from './components/CalculatorPage';
 import FlowCalculator from './components/FlowCalculator';
+import LiquidSpeedCalculator from './components/LiquidSpeedCalculator';
+import FlowByDiameterCalculator from './components/FlowByDiameterCalculator';
+import HydraulicResistanceCalculator from './components/HydraulicResistanceCalculator';
+import PumpSelectionCalculator from './components/PumpSelectionCalculator';
+import VentilationHeatingCalculator from './components/VentilationHeatingCalculator';
+import FuelCostCalculator from './components/FuelCostCalculator';
+import BuildingClimatology from './components/BuildingClimatology';
+import NewProcessCalculator from './components/NewProcessCalculator';
 import { useState } from 'react';
 
 const theme = createTheme({
@@ -52,8 +60,25 @@ function App() {
           <MainMenu onShowCalculator={showCalculator} />
         ) : currentPage === 'flowCalculator' ? (
           <FlowCalculator onBack={hideCalculator} />
+        ) : currentPage === 'liquidSpeedCalculator' ? (
+          <LiquidSpeedCalculator onBack={hideCalculator} />
+        ) : currentPage === 'flowByDiameterCalculator' ? (
+          <FlowByDiameterCalculator onBack={hideCalculator} />
+        ) : currentPage === 'hydraulicResistanceCalculator' ? (
+          <HydraulicResistanceCalculator onBack={hideCalculator} />
+        ) : currentPage === 'pumpSelectionCalculator' ? (
+          <PumpSelectionCalculator onBack={hideCalculator} />
+        ) : currentPage === 'ventilationHeatingCalculator' ? (
+          <VentilationHeatingCalculator onBack={hideCalculator} />
+        ) : currentPage === 'fuelCostCalculator' ? (
+          <FuelCostCalculator onBack={hideCalculator} />
+        ) : currentPage === 'buildingClimatology' ? (
+          <BuildingClimatology onBack={hideCalculator} />
+        ) : currentPage === 'newProcessCalculator' ? (
+          <NewProcessCalculator onBack={hideCalculator} />
         ) : (
           <CalculatorPage
+            id={currentPage}
             title={pageTitle}
             url={pageUrl}
             onBack={hideCalculator}
