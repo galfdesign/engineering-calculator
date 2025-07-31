@@ -12,6 +12,7 @@ import VentilationHeatingCalculator from './components/VentilationHeatingCalcula
 import FuelCostCalculator from './components/FuelCostCalculator';
 import BuildingClimatology from './components/BuildingClimatology';
 import NewProcessCalculator from './components/NewProcessCalculator';
+import PipeFreezingCalculator from './components/PipeFreezingCalculator';
 import { useState } from 'react';
 
 const theme = createTheme({
@@ -76,6 +77,8 @@ function App() {
           <BuildingClimatology onBack={hideCalculator} />
         ) : currentPage === 'newProcessCalculator' ? (
           <NewProcessCalculator onBack={hideCalculator} />
+        ) : currentPage === 'pipeFreezingCalculator' ? (
+          <PipeFreezingCalculator onBack={hideCalculator} />
         ) : (
           <CalculatorPage
             id={currentPage}

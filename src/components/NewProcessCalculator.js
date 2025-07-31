@@ -24,7 +24,7 @@ const pipeSpacingAverageCorrection = {
 };
 
 export default function NewProcessCalculator({ onBack }) {
-  const [surfaceAverage, setSurfaceAverage] = useState(27);
+  const [targetSurfaceTemp, setTargetSurfaceTemp] = useState(27);
   const [fluidDelta, setFluidDelta] = useState(5);
   const [airTemp, setAirTemp] = useState(22);
   const [screedThicknessMM, setScreedThicknessMM] = useState(50);
@@ -44,37 +44,47 @@ export default function NewProcessCalculator({ onBack }) {
 
   const totalResistance = resistanceScreed + resistanceFinish;
   const dTotal = dScreed + dFinish;
-  const lambdaEquiv = dTotal / totalResistance;
 
   const spacingCorrection = pipeSpacingAverageCorrection[pipeSpacing] || 0;
 
-  // --- Амплитуда распределения температуры по поверхности ---
-  const pipeSpacingM = pipeSpacing / 1000;
-  const K = 2.5;
-  // Базовая амплитуда (от конструкции)
-  const baseAmplitude = K * (pipeSpacingM / (lambdaEquiv * Math.sqrt(dTotal)));
-  // Физически корректная амплитуда с учётом дельты теплоносителя
-  const amplitude = baseAmplitude * Math.sqrt(fluidDelta / 10);
+  // --- Теплотехнические расчеты по методике build-calc.com и EN 1264 ---
+  // 1. Сопротивления
+  const RAbove = resistanceScreed + resistanceFinish;
+  const RBelow = 3.0; // Типовое сопротивление утеплителя
+  const RHeatTransferUp = 1/11;
+  const RHeatTransferDown = 1/2;
+  const RTotalUp = RAbove + RHeatTransferUp;
+  const RTotalDown = RBelow + RHeatTransferDown;
 
-  // ✅ Правильная логика с итеративным подходом:
-  // 1. Тепловой поток
-  const heatFluxCalculated = (surfaceAverage - airTemp) * 11.0;
-  // 2. Потери через конструкцию
+  // 2. Тепловые потоки
+  const heatFluxCalculated = (targetSurfaceTemp - airTemp) * 11.0;
   const deltaT = heatFluxCalculated * totalResistance;
-  // 3. Амплитуда (уже рассчитана выше)
-  // 4. Средняя температура теплоносителя
-  const averageFluidTemp = surfaceAverage + deltaT;
-  // 5. Температура подачи
+  const averageFluidTemp = targetSurfaceTemp + deltaT;
+  
+  // 3. Тепловые потоки вверх и вниз
+  const qUp = (averageFluidTemp - airTemp) / RTotalUp;
+  const qDown = (averageFluidTemp - airTemp) / RTotalDown;
+  const qTotal = qUp + qDown;
+
+  // 4. Температура поверхности (средняя)
+  const surfaceAverage = airTemp + qUp * RHeatTransferUp;
+
+  // 5. Градиент между трубами (амплитуда)
+  const totalThickness = dTotal;
+  const lambdaEquiv = totalThickness > 0 ? totalThickness / RAbove : 1;
+  const gradT = lambdaEquiv > 0 ? qUp * (pipeSpacing / 1000) / (2 * lambdaEquiv) : 0;
+  const surfaceMax = surfaceAverage + gradT / 2;
+  const surfaceMin = surfaceAverage - gradT / 2;
+
+  // 6. Тепловой поток на погонный метр
+  const qLinear = qTotal * pipeSpacing / 1000;
+
+  // 7. Температуры теплоносителя
   const supplyTemp = averageFluidTemp + fluidDelta/2;
-  // 6. Температура обратки
   const returnTemp = averageFluidTemp - fluidDelta/2;
-  // 7. Максимальная температура поверхности
-  const maxSurfaceTemp = surfaceAverage + amplitude/2;
-  // 8. Минимальная температура поверхности
-  const minSurfaceTemp = surfaceAverage - amplitude/2;
 
   // Фактическая дельта температуры поверхности
-  const surfaceDelta = maxSurfaceTemp - minSurfaceTemp;
+  const surfaceDelta = surfaceMax - surfaceMin;
 
   return (
     <div className="calculator" style={{
@@ -187,16 +197,16 @@ export default function NewProcessCalculator({ onBack }) {
               <strong>Средняя температура поверхности:</strong> {surfaceAverage.toFixed(1)} °C
             </div>
             <div style={{marginBottom: 8}}>
-              <strong>Максимальная температура поверхности:</strong> {maxSurfaceTemp.toFixed(1)} °C
+              <strong>Максимальная температура поверхности:</strong> {surfaceMax.toFixed(1)} °C
             </div>
             <div style={{marginBottom: 8}}>
-              <strong>Минимальная температура поверхности:</strong> {minSurfaceTemp.toFixed(1)} °C
+              <strong>Минимальная температура поверхности:</strong> {surfaceMin.toFixed(1)} °C
             </div>
             <div style={{marginBottom: 8, fontSize: '1.28em', color: '#53b4ff', fontWeight: 'bold'}}>
               <strong>Тепловой поток:</strong> {heatFluxCalculated.toFixed(1)} Вт/м²
             </div>
             <div style={{fontStyle: 'italic', color: '#b0b0b0'}}>
-              Градиент между трубами: {amplitude.toFixed(2)} °C
+              Градиент между трубами: {gradT.toFixed(2)} °C
             </div>
           </div>
         </div>
@@ -213,8 +223,8 @@ export default function NewProcessCalculator({ onBack }) {
           </label>
           <input
             type="number"
-            value={surfaceAverage}
-            onChange={(e) => setSurfaceAverage(+e.target.value)}
+            value={targetSurfaceTemp}
+            onChange={(e) => setTargetSurfaceTemp(+e.target.value)}
             style={{
               width: '100%',
               padding: '12px 16px',

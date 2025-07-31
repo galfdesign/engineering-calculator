@@ -45,7 +45,7 @@ const MainMenu = ({ onShowCalculator }) => {
       color: '#FFEBEE', // Светло-красный
       items: [
         { title: 'Тепловой поток от плиты', url: '', id: 'plateHeatFlowCalculator' },
-        { title: 'Напольное отопление', url: '', id: 'newProcessCalculator' }
+        { title: 'Время замерзания трубы', url: '', id: 'pipeFreezingCalculator' }
       ],
     },
     // reference: {
